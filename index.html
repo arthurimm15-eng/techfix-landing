@@ -783,9 +783,9 @@ footer { background: #020710; padding: 40px; border-top: 1px solid rgba(0,212,25
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 50); }, { passive: true });
+window.addEventListener('scroll', () => { if(navbar) navbar.classList.toggle('scrolled', window.scrollY > 50); }, { passive: true });
 
-// Reveal Animations
+// Reveal Animations (Move to top to ensure visibility)
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => { 
     if (entry.isIntersecting) { 
@@ -796,41 +796,50 @@ const revealObserver = new IntersectionObserver((entries) => {
       revealObserver.unobserve(entry.target); 
     } 
   });
-}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .highlight, .phone-notification').forEach(el => { revealObserver.observe(el); });
+}, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .highlight, .phone-notification').forEach(el => { 
+    revealObserver.observe(el); 
+  });
+});
 
 // Swiper Initializations
-const problemSwiper = new Swiper('.problem-swiper', {
-  slidesPerView: 1,
-  spaceBetween: 20,
-  pagination: { el: '.swiper-pagination', clickable: true },
-  breakpoints: {
-    640: { slidesPerView: 2 },
-    1024: { slidesPerView: 3 }
-  }
-});
+try {
+  const problemSwiper = new Swiper('.problem-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    pagination: { el: '.swiper-pagination', clickable: true },
+    breakpoints: {
+      640: { slidesPerView: 2 },
+      1024: { slidesPerView: 3 }
+    }
+  });
 
-const servicesSwiper = new Swiper('.services-swiper', {
-  slidesPerView: 1,
-  spaceBetween: 20,
-  pagination: { el: '.swiper-pagination', clickable: true },
-  navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-  breakpoints: {
-    640: { slidesPerView: 2 },
-    768: { slidesPerView: 3 },
-    1024: { slidesPerView: 4 }
-  }
-});
+  const servicesSwiper = new Swiper('.services-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    pagination: { el: '.swiper-pagination', clickable: true },
+    navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+    breakpoints: {
+      640: { slidesPerView: 2 },
+      768: { slidesPerView: 3 },
+      1024: { slidesPerView: 4 }
+    }
+  });
 
-const benefitsSwiper = new Swiper('.benefits-swiper', {
-  slidesPerView: 1,
-  spaceBetween: 20,
-  pagination: { el: '.swiper-pagination', clickable: true },
-  breakpoints: {
-    640: { slidesPerView: 2 },
-    1024: { slidesPerView: 4 }
-  }
-});
+  const benefitsSwiper = new Swiper('.benefits-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 20,
+    pagination: { el: '.swiper-pagination', clickable: true },
+    breakpoints: {
+      640: { slidesPerView: 2 },
+      1024: { slidesPerView: 4 }
+    }
+  });
+} catch (e) {
+  console.error("Swiper failed to load", e);
+}
 
 // Vertical Progress Bar Logic
 const stepsContainer = document.querySelector('.steps-container');
@@ -838,7 +847,7 @@ const progressBar = document.querySelector('.progress-bar-vertical');
 const stepItems = document.querySelectorAll('.step-item');
 
 window.addEventListener('scroll', () => {
-  if (!stepsContainer) return;
+  if (!stepsContainer || !progressBar) return;
   const rect = stepsContainer.getBoundingClientRect();
   const windowHeight = window.innerHeight;
   
