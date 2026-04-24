@@ -544,23 +544,47 @@ section { position: relative; overflow: hidden; }
   width: 64px; height: 64px; border-radius: 50%;
   background: linear-gradient(135deg, #00C853, #00E676);
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 30px rgba(0,200,83,0.5); text-decoration: none;
+  box-shadow: 0 4px 30px rgba(0,200,83,0.5); cursor: pointer;
   animation: float-btn 3s ease-in-out infinite; transition: transform 0.2s;
+  border: none; outline: none;
 }
 .whatsapp-float:hover { transform: scale(1.15); box-shadow: 0 8px 40px rgba(0,200,83,0.7); }
-.whatsapp-float svg { width: 34px; height: 34px; }
-@keyframes float-btn {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+.whatsapp-float svg { width: 34px; height: 34px; color: white; }
+
+/* Chat Widget Styles */
+#chat-widget {
+  position: fixed; bottom: 110px; right: 30px; width: 350px; height: 480px;
+  background: var(--bg-card); border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 24px; z-index: 1000; display: none; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6); overflow: hidden;
+  backdrop-filter: blur(20px);
 }
-.whatsapp-float-label {
-  position: fixed; bottom: 42px; right: 104px; z-index: 998;
-  background: rgba(10,22,40,0.95); color: var(--white);
-  font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 50px;
-  border: 1px solid rgba(0,212,255,0.2);
-  animation: label-pulse 3s ease-in-out infinite; white-space: nowrap; backdrop-filter: blur(10px);
+#chat-widget.active { display: flex; animation: chat-pop 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes chat-pop { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.chat-header {
+  padding: 16px 20px; background: linear-gradient(90deg, #00C853, #00E676);
+  display: flex; align-items: center; justify-content: space-between; color: #000;
 }
-@keyframes label-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+.chat-header-info { display: flex; align-items: center; gap: 12px; }
+.chat-bot-avatar { width: 36px; height: 36px; background: rgba(0,0,0,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.chat-header-text h4 { font-size: 14px; font-weight: 800; margin: 0; font-family: 'Exo 2'; }
+.chat-header-text p { font-size: 11px; margin: 0; opacity: 0.8; }
+.chat-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #000; }
+
+.chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; scrollbar-width: thin; }
+.message { max-width: 85%; padding: 10px 14px; border-radius: 16px; font-size: 13px; line-height: 1.4; }
+.message.bot { background: rgba(255,255,255,0.06); color: var(--white); align-self: flex-start; border-bottom-left-radius: 4px; }
+.message.user { background: var(--blue); color: var(--white); align-self: flex-end; border-bottom-right-radius: 4px; }
+.message a { color: #00E676; font-weight: bold; text-decoration: underline; }
+
+.chat-input-area { padding: 12px; background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.05); display: flex; gap: 8px; }
+.chat-input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; padding: 8px 16px; color: white; font-size: 13px; outline: none; }
+.chat-send { background: #00C853; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #000; }
+
+@media (max-width: 450px) {
+  #chat-widget { width: calc(100% - 40px); right: 20px; bottom: 100px; height: 420px; }
+}
 footer { background: #020710; padding: 40px; border-top: 1px solid rgba(0,212,255,0.1); text-align: center; }
 .footer-logo { font-family: 'Exo 2', sans-serif; font-weight: 900; font-size: 24px; color: var(--cyan); margin-bottom: 8px; }
 .footer-logo span { color: var(--white); }
@@ -776,10 +800,32 @@ footer { background: #020710; padding: 40px; border-top: 1px solid rgba(0,212,25
   <p class="footer-tagline">Assistência técnica especializada em celulares · São Paulo, SP</p>
   <p class="footer-line">© 2025 TechFix Pro · Todos os direitos reservados · Altere o número do WhatsApp antes de publicar.</p>
 </footer>
-<div class="whatsapp-float-label">Fale conosco agora</div>
-<a href="https://wa.me/5511999999999?text=Olá!%20Preciso%20de%20ajuda%20com%20meu%20celular." class="whatsapp-float" target="_blank" aria-label="WhatsApp">
-  <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-</a>
+<div class="whatsapp-float-label">Dúvidas? Fale com nosso Bot</div>
+<button class="whatsapp-float" id="chat-toggle" aria-label="Chatbot">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg>
+</button>
+
+<div id="chat-widget">
+  <div class="chat-header">
+    <div class="chat-header-info">
+      <div class="chat-bot-avatar">🤖</div>
+      <div class="chat-header-text">
+        <h4>Assistente TechFix</h4>
+        <p>Online agora</p>
+      </div>
+    </div>
+    <button class="chat-close" id="chat-close">&times;</button>
+  </div>
+  <div class="chat-messages" id="chat-messages">
+    <div class="message bot">Olá! 👋 Sou o assistente virtual da TechFix. Posso tirar dúvidas rápidas sobre preços, tempo de conserto ou localização. Como posso te ajudar hoje?</div>
+  </div>
+  <div class="chat-input-area">
+    <input type="text" class="chat-input" id="chat-input" placeholder="Digite sua dúvida...">
+    <button class="chat-send" id="chat-send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+    </button>
+  </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
 const navbar = document.getElementById('navbar');
@@ -866,6 +912,61 @@ window.addEventListener('scroll', () => {
     });
   }
 }, { passive: true });
+
+// Example Chatbot Logic
+const chatToggle = document.getElementById('chat-toggle');
+const chatClose = document.getElementById('chat-close');
+const chatWidget = document.getElementById('chat-widget');
+const chatInput = document.getElementById('chat-input');
+const chatSend = document.getElementById('chat-send');
+const chatMessages = document.getElementById('chat-messages');
+
+const waLink = 'https://wa.me/5511999999999?text=Olá!%20Vim%20pelo%20chat%20e%20preciso%20de%20ajuda.';
+
+function toggleChat() {
+  chatWidget.classList.toggle('active');
+  if (chatWidget.classList.contains('active')) chatInput.focus();
+}
+
+function addMessage(text, sender) {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `message ${sender}`;
+  msgDiv.innerHTML = text;
+  chatMessages.appendChild(msgDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function getBotResponse(input) {
+  const text = input.toLowerCase();
+  if (text.includes('preço') || text.includes('valor') || text.includes('quanto')) 
+    return `Os preços variam por modelo. Telas a partir de R$149 e baterias de R$89. Para um orçamento exato, <a href="${waLink}" target="_blank">fale com um técnico aqui</a>.`;
+  if (text.includes('tempo') || text.includes('demora') || text.includes('hora')) 
+    return `Reparos de tela e bateria costumam ficar prontos em menos de 2 horas!`;
+  if (text.includes('onde') || text.includes('endereço') || text.includes('local')) 
+    return `Estamos em São Paulo, SP. Atendemos toda a capital e região.`;
+  if (text.includes('whatsapp') || text.includes('contato') || text.includes('atendente')) 
+    return `Você pode falar com nossa equipe agora mesmo: <a href="${waLink}" target="_blank">Chamar no WhatsApp</a>`;
+  
+  return `Entendi! Para te dar a melhor solução, recomendo falar direto com nossos especialistas: <a href="${waLink}" target="_blank">Clique aqui para falar no WhatsApp</a>`;
+}
+
+async function handleSend() {
+  const val = chatInput.value.trim();
+  if (!val) return;
+  
+  addMessage(val, 'user');
+  chatInput.value = '';
+
+  setTimeout(() => {
+    const response = getBotResponse(val);
+    addMessage(response, 'bot');
+  }, 600);
+}
+
+if (chatToggle) chatToggle.addEventListener('click', toggleChat);
+if (chatClose) chatClose.addEventListener('click', toggleChat);
+if (chatSend) chatSend.addEventListener('click', handleSend);
+if (chatInput) chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
 
 // Counter Animation
 function animateCounter(el, target, suffix = '') {
